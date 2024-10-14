@@ -1,11 +1,70 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import { fetchBooks } from "../utils/api/bookApi";
+import BookCard from "../components/BookCard";
+import Pagination from "../components/Pagination";
 
-function HomePage() {
+const HomePage = ({ wishlist, onWishlistToggle }) => {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      setLoading(true);
+      const data = await fetchBooks(searchTerm, currentPage);
+      const filteredBooks = data.results.filter(
+        (book) =>
+          book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          book.subjects.some((subject) =>
+            subject.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+      );
+      setBooks(filteredBooks);
+      setTotalPages(Math.ceil(data.count / 32));
+      setLoading(false);
+    };
+    loadBooks();
+  }, [searchTerm, currentPage]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
   return (
-    <React.Fragment>
-      <div>This is Home Page</div>
-    </React.Fragment>
+    <div>
+      <div>
+        <input
+          type="text"
+          placeholder="Search by title or genre..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+      </div>
+      
+      <div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          books.map((book) => (
+            <BookCard
+              key={book.id}
+              book={book}
+              isWishlisted={wishlist.some((item) => item.id === book.id)}
+              onWishlistToggle={onWishlistToggle}
+            />
+          ))
+        )}
+      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
+    </div>
   );
-}
+};
 
-export default HomePage
+export default HomePage;
