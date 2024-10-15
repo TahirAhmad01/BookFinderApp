@@ -25,28 +25,30 @@ const App = () => {
 
   return (
     <Router>
-      <NavBar/>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <HomePage
-              wishlist={wishlist}
-              onWishlistToggle={handleWishlistToggle}
-            />
-          }
-        />
-        <Route
-          path="/wishlist"
-          element={
-            <WishlistPage
-              wishlist={wishlist}
-              onWishlistToggle={handleWishlistToggle}
-            />
-          }
-        />
-        <Route path="/book/:id" element={<BookDetailsPage />} />
-      </Routes>
+      <NavBar />
+      <div className="max-w-screen-2xl mx-auto">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage
+                wishlist={wishlist}
+                onWishlistToggle={handleWishlistToggle}
+              />
+            }
+          />
+          <Route
+            path="/wishlist"
+            element={
+              <WishlistPage
+                wishlist={wishlist}
+                onWishlistToggle={handleWishlistToggle}
+              />
+            }
+          />
+          <Route path="/book/:id" element={<BookDetailsPage />} />
+        </Routes>
+      </div>
     </Router>
   );
 };
