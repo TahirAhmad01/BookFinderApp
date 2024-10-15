@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import WishlistPage from "./pages/WishlistPage";
 import BookDetailsPage from "./pages/BookDetailsPage";
 import { useEffect, useState } from "react";
+import NavBar from "./components/NavBar";
 
 const App = () => {
   const [wishlist, setWishlist] = useState(() => {
@@ -24,6 +25,7 @@ const App = () => {
 
   return (
     <Router>
+      <NavBar/>
       <Routes>
         <Route
           path="/"
