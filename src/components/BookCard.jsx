@@ -7,7 +7,7 @@ const BookCard = ({ book, onWishlistToggle, isWishlisted }) => {
   return (
     <Link
       to={`/books/${id}`}
-      className="block max-w-[250px]"
+      className="block w-1/2 md:max-w-[250px] "
     >
       <div className="mb-5">
         <img
