@@ -82,7 +82,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
             ) : (
               <div>
                 <div className="font-semibold pt-3 pb-4 text-xl">Book List</div>
-                <div className="grid lg:grid-cols-4 grid-cols-2 gap-3 justify-items-center">
+                <div className="grid lg:grid-cols-2 grid-cols-2 gap-3 justify-items-center">
                   {filteredBooks.map((book) => (
                     <BookCard
                       book={book}
