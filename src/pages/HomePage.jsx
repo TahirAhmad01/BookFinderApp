@@ -105,7 +105,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
         </div>
 
         <div className="col-span-3 hidden md:block">
-          <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
+          <div className="pt-3 pb-2 mb-4 text-xl font-semibold border-b-2">
             Filter
           </div>
           <SearchInput value={searchTerm} onChange={handleSearchChange} />
@@ -113,15 +113,23 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
             <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
               Genres
             </div>
-            {uniqueGenres.map((genre) => (
-              <div key={genre}>
+
+            {uniqueGenres.map((genre, idx) => (
+              <div className="flex items-center mb-4" key={idx}>
                 <input
+                  id={`genre-checkbox-${idx}`}
                   type="checkbox"
                   value={genre}
                   onChange={handleGenreChange}
                   checked={selectedGenres.includes(genre)}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 />
-                <label>{genre}</label>
+                <label
+                  htmlFor={`genre-checkbox-${idx}`}
+                  className="ms-2 text-xs font-medium text-gray-900 dark:text-gray-300"
+                >
+                  {genre}
+                </label>
               </div>
             ))}
           </div>
