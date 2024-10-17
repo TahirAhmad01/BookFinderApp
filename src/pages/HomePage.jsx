@@ -4,6 +4,7 @@ import BookCard from "../components/BookCard";
 import Pagination from "../components/Pagination";
 import SearchInput from "../components/shared/SearchInput";
 import { useNavigate, useLocation } from "react-router-dom";
+import SkeletonCard from "../components/shared/SkeletonCard";
 
 const removeBrowsingPrefix = (bookshelf) => {
   const prefix = "Browsing: ";
@@ -20,6 +21,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const [uniqueGenres, setUniqueGenres] = useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,26 +38,35 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   }, [location]);
 
   useEffect(() => {
-    const loadBooks = async () => {
-      setLoading(true);
-      const searchParam = searchTerm
-        ? `&search=${encodeURIComponent(searchTerm)}`
-        : "";
-      const genresParam =
-        selectedGenres.length > 0
-          ? `&topic=${encodeURIComponent(selectedGenres.join(","))}`
-          : "";
-      const data = await fetchBooks(currentPage, searchParam, genresParam);
-      setBooks(data.results);
-      setTotalPages(Math.ceil(data.count / 32));
-      setLoading(false);
-    };
     loadBooks();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, searchTerm, selectedGenres]);
 
   useEffect(() => {
     filterBooks();
+    updateUniqueGenres();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [books]);
+
+  useEffect(() => {
+    loadGenresFromLocalStorage();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadBooks = async () => {
+    setLoading(true);
+    const searchParam = searchTerm
+      ? `&search=${encodeURIComponent(searchTerm)}`
+      : "";
+    const genresParam =
+      selectedGenres.length > 0
+        ? `&topic=${encodeURIComponent(selectedGenres.join(","))}`
+        : "";
+    const data = await fetchBooks(currentPage, searchParam, genresParam);
+    setBooks(data.results);
+    setTotalPages(Math.ceil(data.count / 32));
+    setLoading(false);
+  };
 
   const filterBooks = () => {
     setFilteredBooks(books);
@@ -71,7 +82,9 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     const updatedGenres = checked
       ? [...selectedGenres, value]
       : selectedGenres.filter((genre) => genre !== value);
+
     setSelectedGenres(updatedGenres);
+    updateGenresInLocalStorage(updatedGenres);
     navigate(`?genres=${encodeURIComponent(updatedGenres.join(","))}&page=1`);
   };
 
@@ -80,22 +93,54 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     navigate(`?page=${newPage}`);
   };
 
-  const uniqueGenres = [
-    ...new Set(
-      books.flatMap((book) => book.bookshelves.map(removeBrowsingPrefix))
-    ),
-  ].sort();
+  const updateUniqueGenres = () => {
+    const newGenres = [
+      ...new Set(
+        books?.flatMap((book) => book.bookshelves.map(removeBrowsingPrefix))
+      ),
+    ];
+    const storedGenres = getGenresFromLocalStorage();
+    const mergedGenres = [...new Set([...storedGenres, ...newGenres])];
+
+    setUniqueGenres(mergedGenres);
+    updateGenresInLocalStorage(mergedGenres);
+  };
+
+  const getGenresFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem("genres")) || [];
+  };
+
+  const updateGenresInLocalStorage = (genres) => {
+    localStorage.setItem("genres", JSON.stringify(genres));
+  };
+
+  const loadGenresFromLocalStorage = () => {
+    const storedGenres = getGenresFromLocalStorage();
+    setUniqueGenres(storedGenres);
+  };
 
   return (
     <div>
-      <div className="grid grid-cols-12 gap-10 ">
+      <div className="grid grid-cols-12 gap-10">
         <div className="md:col-span-9 col-span-12">
           <div className="flex gap-3 flex-wrap">
+            <div className="font-semibold pt-3 pb-4 text-xl">Book List</div>
             {loading ? (
-              <p>Loading...</p>
+              <div className="grid lg:grid-cols-2 grid-cols-2 gap-3 justify-items-center w-full">
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+                <SkeletonCard/>
+              </div>
             ) : (
               <div>
-                <div className="font-semibold pt-3 pb-4 text-xl">Book List</div>
                 <div className="grid lg:grid-cols-2 grid-cols-2 gap-3 justify-items-center">
                   {filteredBooks.map((book) => (
                     <BookCard
