@@ -5,6 +5,13 @@ import Pagination from "../components/Pagination";
 import SearchInput from "../components/shared/SearchInput";
 import { useNavigate, useLocation } from "react-router-dom";
 
+const removeBrowsingPrefix = (bookshelf) => {
+  const prefix = "Browsing: ";
+  return bookshelf.startsWith(prefix)
+    ? bookshelf.slice(prefix.length)
+    : bookshelf;
+};
+
 const HomePage = ({ wishlist, onWishlistToggle }) => {
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
@@ -20,56 +27,52 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const page = parseInt(query.get("page"), 10) || 1;
+    const search = query.get("search") || "";
+    const genres = query.get("genres") ? query.get("genres").split(",") : [];
+
     setCurrentPage(page);
+    setSearchTerm(search);
+    setSelectedGenres(genres);
   }, [location]);
 
   useEffect(() => {
     const loadBooks = async () => {
       setLoading(true);
-      const data = await fetchBooks(currentPage);
+      const searchParam = searchTerm
+        ? `&search=${encodeURIComponent(searchTerm)}`
+        : "";
+      const genresParam =
+        selectedGenres.length > 0
+          ? `&topic=${encodeURIComponent(selectedGenres.join(","))}`
+          : "";
+      const data = await fetchBooks(currentPage, searchParam, genresParam);
       setBooks(data.results);
       setTotalPages(Math.ceil(data.count / 32));
       setLoading(false);
     };
     loadBooks();
-  }, [currentPage]);
+  }, [currentPage, searchTerm, selectedGenres]);
 
   useEffect(() => {
     filterBooks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, selectedGenres, books]);
+  }, [books]);
 
   const filterBooks = () => {
-    const searchTermLower = searchTerm.toLowerCase();
-    const filtered = books.filter(
-      (book) =>
-        (book.title.toLowerCase().includes(searchTermLower) ||
-          book.subjects.some((subject) =>
-            subject.toLowerCase().includes(searchTermLower)
-          )) &&
-        (selectedGenres.length === 0 ||
-          selectedGenres.some((genre) =>
-            book.bookshelves.map(removeBrowsingPrefix).includes(genre)
-          ))
-    );
-
-    setFilteredBooks(filtered);
+    setFilteredBooks(books);
   };
-
-  const removeBrowsingPrefix = (genre) =>
-    genre.startsWith("Browsing: ") ? genre.replace("Browsing: ", "") : genre;
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+    navigate(`?search=${encodeURIComponent(e.target.value)}&page=1`);
   };
 
   const handleGenreChange = (e) => {
     const { value, checked } = e.target;
-    setSelectedGenres((prevSelectedGenres) =>
-      checked
-        ? [...prevSelectedGenres, value]
-        : prevSelectedGenres.filter((genre) => genre !== value)
-    );
+    const updatedGenres = checked
+      ? [...selectedGenres, value]
+      : selectedGenres.filter((genre) => genre !== value);
+    setSelectedGenres(updatedGenres);
+    navigate(`?genres=${encodeURIComponent(updatedGenres.join(","))}&page=1`);
   };
 
   const handlePageChange = (newPage) => {
