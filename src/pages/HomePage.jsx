@@ -37,12 +37,17 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
             subject.toLowerCase().includes(searchTermLower)
           )) &&
         (selectedGenres.length === 0 ||
-          selectedGenres.some((genre) => book.subjects.includes(genre)))
+          selectedGenres.some((genre) =>
+            book.bookshelves.map(removeBrowsingPrefix).includes(genre)
+          ))
     );
 
-    setTotalPages(Math.ceil(filtered.length / 32)); 
+    setTotalPages(Math.ceil(filtered.length / 32));
     setFilteredBooks(filtered.slice((currentPage - 1) * 32, currentPage * 32));
   };
+
+  const removeBrowsingPrefix = (genre) =>
+    genre.startsWith("Browsing: ") ? genre.replace("Browsing: ", "") : genre;
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -51,29 +56,63 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
 
   const handleGenreChange = (e) => {
     const { value, checked } = e.target;
-    setSelectedGenres(
-      (prevSelectedGenres) =>
-        checked
-          ? [...prevSelectedGenres, value] 
-          : prevSelectedGenres.filter((genre) => genre !== value)
+    setSelectedGenres((prevSelectedGenres) =>
+      checked
+        ? [...prevSelectedGenres, value]
+        : prevSelectedGenres.filter((genre) => genre !== value)
     );
     setCurrentPage(1);
   };
 
   const uniqueGenres = [
-    ...new Set(books.flatMap((book) => book.subjects)),
+    ...new Set(
+      books.flatMap((book) => book.bookshelves.map(removeBrowsingPrefix))
+    ),
   ].sort();
 
   return (
     <div>
       <div></div>
 
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-[220px_1fr] md:gap-5 lg:grid-cols-[290px_1fr] lg:gap-10 w-full">
-        <div>
-          <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">Filter</div>
+      <div className="grid grid-cols-12 gap-10 ">
+        <div className="md:col-span-9 col-span-12">
+          <div className="flex gap-3 flex-wrap">
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <div>
+                <div className="font-semibold pt-3 pb-4 text-xl">Book List</div>
+                <div className="grid lg:grid-cols-4 grid-cols-2 gap-3 justify-items-center">
+                  {filteredBooks.map((book) => (
+                    <BookCard
+                      book={book}
+                      key={book.id}
+                      isWishlisted={wishlist.some(
+                        (item) => item.id === book.id
+                      )}
+                      onWishlistToggle={onWishlistToggle}
+                    />
+                  ))}
+                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="col-span-3 hidden md:block">
+          <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
+            Filter
+          </div>
           <SearchInput value={searchTerm} onChange={handleSearchChange} />
           <div>
-            <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">Genres</div>
+            <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
+              Genres
+            </div>
             {uniqueGenres.map((genre) => (
               <div key={genre}>
                 <input
@@ -87,25 +126,6 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
             ))}
           </div>
         </div>
-        <div className="flex gap-3 flex-wrap">
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            filteredBooks.map((book) => (
-              <BookCard
-                book={book}
-                key={book.id}
-                isWishlisted={wishlist.some((item) => item.id === book.id)}
-                onWishlistToggle={onWishlistToggle}
-              />
-            ))
-          )}
-        </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
       </div>
     </div>
   );
