@@ -3,6 +3,7 @@ import { fetchBooks } from "../utils/api/bookApi";
 import BookCard from "../components/BookCard";
 import Pagination from "../components/Pagination";
 import SearchInput from "../components/shared/SearchInput";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const HomePage = ({ wishlist, onWishlistToggle }) => {
   const [books, setBooks] = useState([]);
@@ -13,20 +14,30 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedGenres, setSelectedGenres] = useState([]);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const page = parseInt(query.get("page"), 10) || 1;
+    setCurrentPage(page);
+  }, [location]);
+
   useEffect(() => {
     const loadBooks = async () => {
       setLoading(true);
-      const data = await fetchBooks();
+      const data = await fetchBooks(currentPage);
       setBooks(data.results);
+      setTotalPages(Math.ceil(data.count / 32));
       setLoading(false);
     };
     loadBooks();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     filterBooks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, selectedGenres, books, currentPage]);
+  }, [searchTerm, selectedGenres, books]);
 
   const filterBooks = () => {
     const searchTermLower = searchTerm.toLowerCase();
@@ -42,8 +53,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
           ))
     );
 
-    setTotalPages(Math.ceil(filtered.length / 32));
-    setFilteredBooks(filtered.slice((currentPage - 1) * 32, currentPage * 32));
+    setFilteredBooks(filtered);
   };
 
   const removeBrowsingPrefix = (genre) =>
@@ -51,7 +61,6 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1);
   };
 
   const handleGenreChange = (e) => {
@@ -61,7 +70,11 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
         ? [...prevSelectedGenres, value]
         : prevSelectedGenres.filter((genre) => genre !== value)
     );
-    setCurrentPage(1);
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    navigate(`?page=${newPage}`);
   };
 
   const uniqueGenres = [
@@ -72,8 +85,6 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
 
   return (
     <div>
-      <div></div>
-
       <div className="grid grid-cols-12 gap-10 ">
         <div className="md:col-span-9 col-span-12">
           <div className="flex gap-3 flex-wrap">
@@ -94,11 +105,13 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
                     />
                   ))}
                 </div>
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                />
+                <div className="py-4 flex justify-center">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
               </div>
             )}
           </div>
