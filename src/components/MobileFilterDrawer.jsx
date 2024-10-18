@@ -11,6 +11,7 @@ const MobileFilterDrawer = ({
   loading,
   uniqueGenres,
   selectedGenre,
+  page,
   handleGenreChange,
 }) => {
   return (
@@ -39,7 +40,11 @@ const MobileFilterDrawer = ({
                 type="checkbox"
                 value={genre}
                 onChange={handleGenreChange}
-                checked={selectedGenre === genre}
+                checked={
+                  page == "whitelist"
+                    ? selectedGenre.includes(genre)
+                    : selectedGenre === genre
+                }
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
               />
               <label

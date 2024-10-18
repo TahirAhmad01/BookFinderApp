@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import BookCard from "../components/BookCard";
-import Pagination from "../components/Pagination";
-import SearchInput from "../components/shared/SearchInput";
+import BookList from "../components/BookList";
+import DesktopFilters from "../components/DesktopFilters";
+import MobileFilterDrawer from "../components/MobileFilterDrawer";
+import { FaFilter } from "react-icons/fa6";
 
 const WishlistPage = ({ wishlist, onWishlistToggle }) => {
   const [filteredWishlist, setFilteredWishlist] = useState([]);
@@ -9,12 +10,15 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     filterWishlist();
   }, [searchTerm, selectedGenres, wishlist, currentPage]);
 
   const filterWishlist = () => {
+    setLoading(true);
     const searchTermLower = searchTerm.toLowerCase();
     const filtered = wishlist.filter(
       (book) =>
@@ -36,6 +40,7 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
         currentPage * itemsPerPage
       )
     );
+    setLoading(false);
   };
 
   const removeBrowsingPrefix = (genre) =>
@@ -62,70 +67,61 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
     ),
   ].sort();
 
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  const clearSearch = () => {
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
   return (
     <div>
+      <MobileFilterDrawer
+        isOpen={isDrawerOpen}
+        toggleDrawer={toggleDrawer}
+        searchTerm={searchTerm}
+        handleSearchChange={handleSearchChange}
+        clearSearch={clearSearch}
+        loading={loading}
+        uniqueGenres={uniqueGenres}
+        selectedGenres={selectedGenres}
+        handleGenreChange={handleGenreChange}
+      />
       <div className="md:grid grid-cols-12 gap-10">
         <div className="md:col-span-9 col-span-12">
-          <div className="flex gap-3 flex-wrap">
-            <div>
-              <div className="font-semibold pt-3 pb-4 text-xl">Wishlist</div>
-              {filteredWishlist.length === 0 ? (
-                <p>No books found in your wishlist.</p>
-              ) : (
-                <div>
-                  <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center pb-3">
-                    {filteredWishlist.map((book) => (
-                      <BookCard
-                        book={book}
-                        key={book.id}
-                        isWishlisted={true}
-                        onWishlistToggle={onWishlistToggle}
-                      />
-                    ))}
-                  </div>
-                  {totalPages > 1 && (
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={setCurrentPage}
-                    />
-                  )}
-                </div>
-              )}
+          <div className="flex justify-between items-center mb-3 border-b">
+            <div className="font-semibold pt-3 pb-4 text-xl w-full">
+              White List
             </div>
+            <button
+              onClick={toggleDrawer}
+              className="rounded-md border px-4 py-1 h-10 flex items-center gap-2 md:hidden"
+            >
+              <FaFilter /> Filter
+            </button>
           </div>
+          <BookList
+            books={filteredWishlist}
+            loading={loading}
+            wishlist={wishlist}
+            onWishlistToggle={onWishlistToggle}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
         </div>
 
-        <div className="col-span-3 hidden md:block">
-          <div className="pt-3 pb-2 mb-4 text-xl font-semibold border-b-2">
-            Filter
-          </div>
-          <SearchInput value={searchTerm} onChange={handleSearchChange} />
-          <div>
-            <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
-              Genres
-            </div>
-
-            {uniqueGenres.map((genre, idx) => (
-              <div className="flex items-center mb-4" key={idx}>
-                <input
-                  id={`wishlist-genre-checkbox-${idx}`}
-                  type="checkbox"
-                  value={genre}
-                  onChange={handleGenreChange}
-                  checked={selectedGenres.includes(genre)}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  htmlFor={`wishlist-genre-checkbox-${idx}`}
-                  className="ms-2 text-xs font-medium text-gray-900 dark:text-gray-300"
-                >
-                  {genre}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
+        <DesktopFilters
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+          loading={loading}
+          uniqueGenres={uniqueGenres}
+          selectedGenre={selectedGenres}
+          handleGenreChange={handleGenreChange}
+          page="whitelist"
+        />
       </div>
     </div>
   );
