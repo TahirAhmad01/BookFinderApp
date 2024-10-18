@@ -26,7 +26,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   const [debounceSearch, setDebounceSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState(null);
   const [uniqueGenres, setUniqueGenres] = useState([]);
 
   const navigate = useNavigate();
@@ -36,11 +36,11 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     const query = new URLSearchParams(location.search);
     const page = parseInt(query.get("page"), 10) || 1;
     const search = query.get("search") || "";
-    const genres = query.get("genres") ? query.get("genres").split(",") : [];
+    const genre = query.get("genres") || null;
 
     setCurrentPage(page);
     setSearchTerm(search);
-    setSelectedGenres(genres);
+    setSelectedGenre(genre);
   }, [location]);
 
   const loadBooks = useCallback(async () => {
@@ -48,15 +48,14 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     const searchParam = searchTerm
       ? `&search=${encodeURIComponent(searchTerm)}`
       : "";
-    const genresParam =
-      selectedGenres.length > 0
-        ? `&topic=${encodeURIComponent(selectedGenres.join(","))}`
-        : "";
-    const data = await fetchBooks(currentPage, searchParam, genresParam);
+    const genreParam = selectedGenre
+      ? `&topic=${encodeURIComponent(selectedGenre)}`
+      : "";
+    const data = await fetchBooks(currentPage, searchParam, genreParam);
     setBooks(data.results);
     setTotalPages(Math.ceil(data.count / 32));
     setLoading(false);
-  }, [currentPage, debounceSearch, selectedGenres]);
+  }, [currentPage, debounceSearch, selectedGenre]);
 
   useEffect(() => {
     loadBooks();
@@ -75,7 +74,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
       debounce((value) => {
         updateNavigation(1, value);
       }, 700),
-    [navigate, selectedGenres]
+    [navigate]
   );
 
   const handleSearchChange = (e) => {
@@ -86,13 +85,9 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
 
   const handleGenreChange = (e) => {
     const { value, checked } = e.target;
-    const updatedGenres = checked
-      ? [...selectedGenres, value]
-      : selectedGenres.filter((genre) => genre !== value);
-
-    setSelectedGenres(updatedGenres);
-    updateNavigation(1, searchTerm, updatedGenres);
-    updateGenresInLocalStorage(updatedGenres);
+    const newGenre = checked ? value : null;
+    setSelectedGenre(newGenre);
+    updateNavigation(1, searchTerm, newGenre);
   };
 
   const handlePageChange = (newPage) => {
@@ -131,11 +126,11 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   const updateNavigation = (
     newPage = 1,
     search = searchTerm,
-    genres = selectedGenres
+    genre = selectedGenre
   ) => {
     navigate(
       `?search=${encodeURIComponent(search)}&genres=${encodeURIComponent(
-        genres.join(",")
+        genre || ""
       )}&page=${newPage}`
     );
   };
@@ -201,19 +196,18 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
             </div>
             {loading ? (
               <>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-              <GenreSkeleton/>
-  
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
+                <GenreSkeleton />
               </>
             ) : (
               uniqueGenres.map((genre, idx) => (
@@ -223,7 +217,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
                     type="checkbox"
                     value={genre}
                     onChange={handleGenreChange}
-                    checked={selectedGenres.includes(genre)}
+                    checked={selectedGenre === genre} // Check against single genre
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label

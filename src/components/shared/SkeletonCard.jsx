@@ -1,6 +1,6 @@
 const SkeletonCard = () => {
   return (
-    <div className="animate-pulse w-full border rounded-lg overflow-hidden flex flex-col justify-between">
+    <div className="animate-pulse w-full border rounded-lg overflow-hidden flex flex-col justify-between p-2">
       <div className="flex w-full items-center gap-3 max-h-[270px]">
         <div className="w-56 h-56 bg-gray-400"></div>
         <div className="w-full">
