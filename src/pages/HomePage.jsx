@@ -142,46 +142,50 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-12 gap-10">
-        <div className="md:col-span-9 col-span-12">
-          <div className="flex gap-3 flex-wrap">
-            <div className="font-semibold pt-3 pb-4 text-xl">Book List</div>
-            {loading ? (
-              <div className="grid lg:grid-cols-2 grid-cols-2 gap-3 justify-items-center w-full">
-                {[...Array(10)].map((_, index) => (
-                  <SkeletonCard key={index} />
-                ))}
-              </div>
-            ) : books.length === 0 ? (
-              <div className="text-center text-lg">No books found</div>
-            ) : (
-              <div>
-                <div className="grid lg:grid-cols-2 grid-cols-2 gap-3 justify-items-center">
-                  {books.map((book) => (
-                    <BookCard
-                      book={book}
-                      key={book.id}
-                      isWishlisted={wishlist.some(
-                        (item) => item.id === book.id
-                      )}
-                      onWishlistToggle={onWishlistToggle}
-                    />
+      <div className="grid grid-cols-12 gap-10 w-full">
+        <div className="md:col-span-8 lg:col-span-9 col-span-12 w-full">
+          <div>
+            <div className="font-semibold pt-3 pb-4 text-xl w-full">
+              Book List
+            </div>
+            <div className="w-full">
+              {loading ? (
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center w-full">
+                  {[...Array(10)].map((_, index) => (
+                    <SkeletonCard key={index} />
                   ))}
                 </div>
-                <div className="py-4 flex justify-center">
-                  {totalPages > 0 && (
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={handlePageChange}
-                    />
-                  )}
+              ) : books.length === 0 ? (
+                <div className="text-center text-lg">No books found</div>
+              ) : (
+                <div>
+                  <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center w-full">
+                    {books.map((book) => (
+                      <BookCard
+                        book={book}
+                        key={book.id}
+                        isWishlisted={wishlist.some(
+                          (item) => item.id === book.id
+                        )}
+                        onWishlistToggle={onWishlistToggle}
+                      />
+                    ))}
+                  </div>
+                  <div className="py-4 flex justify-center">
+                    {totalPages > 0 && (
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
-        <div className="col-span-3 hidden md:block">
+        <div className="lg:col-span-3 md:col-span-4 hidden md:block">
           <div className="pt-3 pb-2 mb-4 text-xl font-semibold border-b-2">
             Filter
           </div>
@@ -217,7 +221,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
                     type="checkbox"
                     value={genre}
                     onChange={handleGenreChange}
-                    checked={selectedGenre === genre} // Check against single genre
+                    checked={selectedGenre === genre}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label

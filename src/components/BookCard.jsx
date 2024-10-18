@@ -15,7 +15,7 @@ const BookCard = ({ book, onWishlistToggle, isWishlisted }) => {
       <div className="w-full border rounded-lg overflow-hidden flex flex-col justify-between p-3">
         <div className="flex w-full items-center gap-3 max-h-[230px]">
           <Link to={`/books/${id}`}>
-            <div className="overflow-hidden w-[160px] h-full">
+            <div className="overflow-hidden w-[90px] md:w-[160px] h-full">
               <img
                 src={formats["image/jpeg"]}
                 alt=""

@@ -5,7 +5,7 @@ import logo from "../assets/logo.svg";
 function NavBar() {
   return (
     <React.Fragment>
-      <nav className="bg-white border-gray-200 dark:bg-gray-900 shadow-md sticky top-0 left-0 z-50">
+      <nav className="bg-white border-gray-200 dark:bg-gray-900 shadow-md sticky top-0 left-0 right-0 w-full z-50">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link
             to="/"
