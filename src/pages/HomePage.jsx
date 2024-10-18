@@ -10,6 +10,7 @@ import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from "../utils/localStorageHelper";
+import GenreSkeleton from "../components/shared/GenreSkeleton";
 
 const removeBrowsingPrefix = (bookshelf) => {
   const prefix = "Browsing: ";
@@ -22,7 +23,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debounceSearch, setDebounceSearch] = useState("")
+  const [debounceSearch, setDebounceSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedGenres, setSelectedGenres] = useState([]);
@@ -79,8 +80,8 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    setSearchTerm(value); 
-    debouncedSearchChange(value); 
+    setSearchTerm(value);
+    debouncedSearchChange(value);
   };
 
   const handleGenreChange = (e) => {
@@ -173,11 +174,13 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
                   ))}
                 </div>
                 <div className="py-4 flex justify-center">
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
+                  {totalPages > 0 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  )}
                 </div>
               </div>
             )}
@@ -197,7 +200,21 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
               Genres
             </div>
             {loading ? (
-              <div className="text-gray-500">Loading genres...</div>
+              <>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+              <GenreSkeleton/>
+  
+              </>
             ) : (
               uniqueGenres.map((genre, idx) => (
                 <div className="flex items-center mb-4" key={idx}>

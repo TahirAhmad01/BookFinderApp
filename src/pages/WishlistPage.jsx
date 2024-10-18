@@ -75,7 +75,7 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
                 <p>No books found in your wishlist.</p>
               ) : (
                 <div>
-                  <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center">
+                  <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center pb-3">
                     {filteredWishlist.map((book) => (
                       <BookCard
                         book={book}
@@ -85,11 +85,13 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
                       />
                     ))}
                   </div>
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                  />
+                  {totalPages > 1 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
+                    />
+                  )}
                 </div>
               )}
             </div>
