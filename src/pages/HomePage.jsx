@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { debounce } from "../utils/debounce";
 import { fetchBooks } from "../utils/api/bookApi";
-import BookCard from "../components/BookCard";
-import Pagination from "../components/Pagination";
-import SearchInput from "../components/shared/SearchInput";
+import BookList from "../components/BookList";
+import MobileFilterDrawer from "../components/MobileFilterDrawer";
+import DesktopFilters from "../components/DesktopFilters";
 import { useNavigate, useLocation } from "react-router-dom";
-import SkeletonCard from "../components/shared/SkeletonCard";
 import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from "../utils/localStorageHelper";
-import GenreSkeleton from "../components/shared/GenreSkeleton";
+import { FaFilter } from "react-icons/fa6";
 
 const removeBrowsingPrefix = (bookshelf) => {
   const prefix = "Browsing: ";
@@ -28,6 +27,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [uniqueGenres, setUniqueGenres] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,6 +73,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     () =>
       debounce((value) => {
         updateNavigation(1, value);
+        setDebounceSearch(value)
       }, 700),
     [navigate]
   );
@@ -103,136 +104,91 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     ];
 
     const storedGenres = getGenresFromLocalStorage();
-
     const mergedGenres = [...new Set([...storedGenres, ...newGenres])];
 
     setUniqueGenres(mergedGenres);
     updateGenresInLocalStorage(mergedGenres);
   };
 
-  const getGenresFromLocalStorage = () => {
-    return getLocalStorageItem("genres");
-  };
-
-  const updateGenresInLocalStorage = (genres) => {
-    setLocalStorageItem("genres", genres);
-  };
-
-  const loadGenresFromLocalStorage = () => {
-    const storedGenres = getGenresFromLocalStorage();
-    setUniqueGenres(storedGenres);
-  };
-
-  const updateNavigation = (
-    newPage = 1,
-    search = searchTerm,
-    genre = selectedGenre
-  ) => {
-    navigate(
-      `?search=${encodeURIComponent(search)}&genres=${encodeURIComponent(
-        genre || ""
-      )}&page=${newPage}`
-    );
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
   };
 
   const clearSearch = () => {
     setSearchTerm("");
-    updateNavigation(1, "");
+    updateNavigation(currentPage);
+  };
+
+  const updateNavigation = (
+    page,
+    search = searchTerm,
+    genre = selectedGenre
+  ) => {
+    const newSearchParams = new URLSearchParams(location.search);
+    newSearchParams.set("page", page);
+    if (search) newSearchParams.set("search", search);
+    if (genre) newSearchParams.set("genres", genre);
+    navigate(`?${newSearchParams.toString()}`);
+  };
+
+  const loadGenresFromLocalStorage = () => {
+    const storedGenres = getGenresFromLocalStorage();
+    if (storedGenres.length > 0) {
+      setUniqueGenres(storedGenres);
+    }
+  };
+
+  const updateGenresInLocalStorage = (genres) => {
+    setLocalStorageItem("uniqueGenres", genres);
+  };
+
+  const getGenresFromLocalStorage = () => {
+    return getLocalStorageItem("uniqueGenres") || [];
   };
 
   return (
-    <div className="md:grid grid-cols-12 gap-10 w-full">
-      <div className="md:col-span-8 lg:col-span-9 col-span-12 w-full">
-        <div>
-          <div className="font-semibold pt-3 pb-4 text-xl w-full">
-            Book List
+    <div>
+      <MobileFilterDrawer
+        isOpen={isDrawerOpen}
+        toggleDrawer={toggleDrawer}
+        searchTerm={searchTerm}
+        handleSearchChange={handleSearchChange}
+        clearSearch={clearSearch}
+        loading={loading}
+        uniqueGenres={uniqueGenres}
+        selectedGenre={selectedGenre}
+        handleGenreChange={handleGenreChange}
+      />
+      <div className="md:grid grid-cols-12 gap-5 w-full">
+        <div className="md:col-span-8 lg:col-span-9">
+          <div className="flex justify-between items-center mb-3 border-b">
+            <div className="font-semibold pt-3 pb-4 text-xl w-full">
+              Book List
+            </div>
+            <button onClick={toggleDrawer} className="rounded-md border px-4 py-1 h-10 flex items-center gap-2 md:hidden">
+              <FaFilter /> Filter
+            </button>
           </div>
-          <div className="w-full">
-            {loading ? (
-              <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-3 justify-items-center w-full">
-                {[...Array(10)].map((_, index) => (
-                  <SkeletonCard key={index} />
-                ))}
-              </div>
-            ) : books.length === 0 ? (
-              <div className="text-center text-lg">No books found</div>
-            ) : (
-              <div>
-                <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-3 justify-items-center w-full">
-                  {books.map((book) => (
-                    <BookCard
-                      book={book}
-                      key={book.id}
-                      isWishlisted={wishlist.some(
-                        (item) => item.id === book.id
-                      )}
-                      onWishlistToggle={onWishlistToggle}
-                    />
-                  ))}
-                </div>
-                <div className="py-4 flex justify-center">
-                  {totalPages > 0 && (
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={handlePageChange}
-                    />
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+          <BookList
+            books={books}
+            loading={loading}
+            wishlist={wishlist}
+            onWishlistToggle={onWishlistToggle}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
         </div>
-      </div>
-      <div className="lg:col-span-3 md:col-span-4 hidden md:block">
-        <div className="pt-3 pb-2 mb-4 text-xl font-semibold border-b-2">
-          Filter
-        </div>
-        <SearchInput
-          value={searchTerm}
-          onChange={handleSearchChange}
+
+        <DesktopFilters
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
           clearSearch={clearSearch}
+          loading={loading}
+          uniqueGenres={uniqueGenres}
+          selectedGenre={selectedGenre}
+          handleGenreChange={handleGenreChange}
         />
-        <div>
-          <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
-            Genres
-          </div>
-          {loading ? (
-            <>
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-              <GenreSkeleton />
-            </>
-          ) : (
-            uniqueGenres.map((genre, idx) => (
-              <div className="flex items-center mb-4" key={idx}>
-                <input
-                  id={`genre-checkbox-${idx}`}
-                  type="checkbox"
-                  value={genre}
-                  onChange={handleGenreChange}
-                  checked={selectedGenre === genre}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <label
-                  htmlFor={`genre-checkbox-${idx}`}
-                  className="ml-2 text-sm font-medium text-gray-900"
-                >
-                  {genre}
-                </label>
-              </div>
-            ))
-          )}
-        </div>
       </div>
     </div>
   );

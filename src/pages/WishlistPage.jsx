@@ -12,7 +12,6 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
 
   useEffect(() => {
     filterWishlist();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, selectedGenres, wishlist, currentPage]);
 
   const filterWishlist = () => {
@@ -29,7 +28,6 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
           ))
     );
 
-    // Calculate total pages based on 32 items per page
     const itemsPerPage = 32;
     setTotalPages(Math.ceil(filtered.length / itemsPerPage));
     setFilteredWishlist(
@@ -66,7 +64,7 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-12 gap-10">
+      <div className="md:grid grid-cols-12 gap-10">
         <div className="md:col-span-9 col-span-12">
           <div className="flex gap-3 flex-wrap">
             <div>
