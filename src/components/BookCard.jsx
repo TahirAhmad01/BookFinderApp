@@ -32,7 +32,7 @@ const BookCard = ({ book, onWishlistToggle, isWishlisted }) => {
               <p className="mb-0.5 text-sm text-gray-500">
                 {authors.map((a) => a.name).join(", ")}
               </p>
-              <div className="text-xs flex flex-wrap gap-1 py-2">
+              <div className="text-xs hidden md:flex flex-wrap gap-1 py-2">
                 {bookshelves.slice(0, 4).map((genre, idx) => (
                   <div
                     key={idx}

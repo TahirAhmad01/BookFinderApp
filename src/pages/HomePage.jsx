@@ -141,99 +141,97 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   };
 
   return (
-    <div>
-      <div className="grid grid-cols-12 gap-10 w-full">
-        <div className="md:col-span-8 lg:col-span-9 col-span-12 w-full">
-          <div>
-            <div className="font-semibold pt-3 pb-4 text-xl w-full">
-              Book List
-            </div>
-            <div className="w-full">
-              {loading ? (
-                <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center w-full">
-                  {[...Array(10)].map((_, index) => (
-                    <SkeletonCard key={index} />
+    <div className="md:grid grid-cols-12 gap-10 w-full">
+      <div className="md:col-span-8 lg:col-span-9 col-span-12 w-full">
+        <div>
+          <div className="font-semibold pt-3 pb-4 text-xl w-full">
+            Book List
+          </div>
+          <div className="w-full">
+            {loading ? (
+              <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-3 justify-items-center w-full">
+                {[...Array(10)].map((_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+              </div>
+            ) : books.length === 0 ? (
+              <div className="text-center text-lg">No books found</div>
+            ) : (
+              <div>
+                <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-3 justify-items-center w-full">
+                  {books.map((book) => (
+                    <BookCard
+                      book={book}
+                      key={book.id}
+                      isWishlisted={wishlist.some(
+                        (item) => item.id === book.id
+                      )}
+                      onWishlistToggle={onWishlistToggle}
+                    />
                   ))}
                 </div>
-              ) : books.length === 0 ? (
-                <div className="text-center text-lg">No books found</div>
-              ) : (
-                <div>
-                  <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center w-full">
-                    {books.map((book) => (
-                      <BookCard
-                        book={book}
-                        key={book.id}
-                        isWishlisted={wishlist.some(
-                          (item) => item.id === book.id
-                        )}
-                        onWishlistToggle={onWishlistToggle}
-                      />
-                    ))}
-                  </div>
-                  <div className="py-4 flex justify-center">
-                    {totalPages > 0 && (
-                      <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                      />
-                    )}
-                  </div>
+                <div className="py-4 flex justify-center">
+                  {totalPages > 0 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="lg:col-span-3 md:col-span-4 hidden md:block">
-          <div className="pt-3 pb-2 mb-4 text-xl font-semibold border-b-2">
-            Filter
-          </div>
-          <SearchInput
-            value={searchTerm}
-            onChange={handleSearchChange}
-            clearSearch={clearSearch}
-          />
-          <div>
-            <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
-              Genres
-            </div>
-            {loading ? (
-              <>
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-                <GenreSkeleton />
-              </>
-            ) : (
-              uniqueGenres.map((genre, idx) => (
-                <div className="flex items-center mb-4" key={idx}>
-                  <input
-                    id={`genre-checkbox-${idx}`}
-                    type="checkbox"
-                    value={genre}
-                    onChange={handleGenreChange}
-                    checked={selectedGenre === genre}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <label
-                    htmlFor={`genre-checkbox-${idx}`}
-                    className="ml-2 text-sm font-medium text-gray-900"
-                  >
-                    {genre}
-                  </label>
-                </div>
-              ))
+              </div>
             )}
           </div>
+        </div>
+      </div>
+      <div className="lg:col-span-3 md:col-span-4 hidden md:block">
+        <div className="pt-3 pb-2 mb-4 text-xl font-semibold border-b-2">
+          Filter
+        </div>
+        <SearchInput
+          value={searchTerm}
+          onChange={handleSearchChange}
+          clearSearch={clearSearch}
+        />
+        <div>
+          <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
+            Genres
+          </div>
+          {loading ? (
+            <>
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+              <GenreSkeleton />
+            </>
+          ) : (
+            uniqueGenres.map((genre, idx) => (
+              <div className="flex items-center mb-4" key={idx}>
+                <input
+                  id={`genre-checkbox-${idx}`}
+                  type="checkbox"
+                  value={genre}
+                  onChange={handleGenreChange}
+                  checked={selectedGenre === genre}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label
+                  htmlFor={`genre-checkbox-${idx}`}
+                  className="ml-2 text-sm font-medium text-gray-900"
+                >
+                  {genre}
+                </label>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
