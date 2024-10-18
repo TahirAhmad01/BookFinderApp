@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { debounce } from "../utils/debounce";
 import { fetchBooks } from "../utils/api/bookApi";
 import BookCard from "../components/BookCard";
 import Pagination from "../components/Pagination";
 import SearchInput from "../components/shared/SearchInput";
 import { useNavigate, useLocation } from "react-router-dom";
 import SkeletonCard from "../components/shared/SkeletonCard";
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from "../utils/localStorageHelper";
 
 const removeBrowsingPrefix = (bookshelf) => {
   const prefix = "Browsing: ";
@@ -15,9 +20,9 @@ const removeBrowsingPrefix = (bookshelf) => {
 
 const HomePage = ({ wishlist, onWishlistToggle }) => {
   const [books, setBooks] = useState([]);
-  const [filteredBooks, setFilteredBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debounceSearch, setDebounceSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedGenres, setSelectedGenres] = useState([]);
@@ -37,23 +42,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     setSelectedGenres(genres);
   }, [location]);
 
-  useEffect(() => {
-    loadBooks();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, searchTerm, selectedGenres]);
-
-  useEffect(() => {
-    filterBooks();
-    updateUniqueGenres();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [books]);
-
-  useEffect(() => {
-    loadGenresFromLocalStorage();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadBooks = async () => {
+  const loadBooks = useCallback(async () => {
     setLoading(true);
     const searchParam = searchTerm
       ? `&search=${encodeURIComponent(searchTerm)}`
@@ -66,15 +55,32 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     setBooks(data.results);
     setTotalPages(Math.ceil(data.count / 32));
     setLoading(false);
-  };
+  }, [currentPage, debounceSearch, selectedGenres]);
 
-  const filterBooks = () => {
-    setFilteredBooks(books);
-  };
+  useEffect(() => {
+    loadBooks();
+  }, [loadBooks]);
+
+  useEffect(() => {
+    updateUniqueGenres();
+  }, [books]);
+
+  useEffect(() => {
+    loadGenresFromLocalStorage();
+  }, []);
+
+  const debouncedSearchChange = useMemo(
+    () =>
+      debounce((value) => {
+        updateNavigation(1, value);
+      }, 700),
+    [navigate, selectedGenres]
+  );
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    navigate(`?search=${encodeURIComponent(e.target.value)}&page=1`);
+    const value = e.target.value;
+    setSearchTerm(value); 
+    debouncedSearchChange(value); 
   };
 
   const handleGenreChange = (e) => {
@@ -84,13 +90,13 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
       : selectedGenres.filter((genre) => genre !== value);
 
     setSelectedGenres(updatedGenres);
+    updateNavigation(1, searchTerm, updatedGenres);
     updateGenresInLocalStorage(updatedGenres);
-    navigate(`?genres=${encodeURIComponent(updatedGenres.join(","))}&page=1`);
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    navigate(`?page=${newPage}`);
+    updateNavigation(newPage);
   };
 
   const updateUniqueGenres = () => {
@@ -99,7 +105,9 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
         books?.flatMap((book) => book.bookshelves.map(removeBrowsingPrefix))
       ),
     ];
+
     const storedGenres = getGenresFromLocalStorage();
+
     const mergedGenres = [...new Set([...storedGenres, ...newGenres])];
 
     setUniqueGenres(mergedGenres);
@@ -107,16 +115,33 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   };
 
   const getGenresFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem("genres")) || [];
+    return getLocalStorageItem("genres");
   };
 
   const updateGenresInLocalStorage = (genres) => {
-    localStorage.setItem("genres", JSON.stringify(genres));
+    setLocalStorageItem("genres", genres);
   };
 
   const loadGenresFromLocalStorage = () => {
     const storedGenres = getGenresFromLocalStorage();
     setUniqueGenres(storedGenres);
+  };
+
+  const updateNavigation = (
+    newPage = 1,
+    search = searchTerm,
+    genres = selectedGenres
+  ) => {
+    navigate(
+      `?search=${encodeURIComponent(search)}&genres=${encodeURIComponent(
+        genres.join(",")
+      )}&page=${newPage}`
+    );
+  };
+
+  const clearSearch = () => {
+    setSearchTerm("");
+    updateNavigation(1, "");
   };
 
   return (
@@ -127,22 +152,16 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
             <div className="font-semibold pt-3 pb-4 text-xl">Book List</div>
             {loading ? (
               <div className="grid lg:grid-cols-2 grid-cols-2 gap-3 justify-items-center w-full">
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
-                <SkeletonCard/>
+                {[...Array(10)].map((_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
               </div>
+            ) : books.length === 0 ? (
+              <div className="text-center text-lg">No books found</div>
             ) : (
               <div>
                 <div className="grid lg:grid-cols-2 grid-cols-2 gap-3 justify-items-center">
-                  {filteredBooks.map((book) => (
+                  {books.map((book) => (
                     <BookCard
                       book={book}
                       key={book.id}
@@ -164,35 +183,41 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
             )}
           </div>
         </div>
-
         <div className="col-span-3 hidden md:block">
           <div className="pt-3 pb-2 mb-4 text-xl font-semibold border-b-2">
             Filter
           </div>
-          <SearchInput value={searchTerm} onChange={handleSearchChange} />
+          <SearchInput
+            value={searchTerm}
+            onChange={handleSearchChange}
+            clearSearch={clearSearch}
+          />
           <div>
             <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
               Genres
             </div>
-
-            {uniqueGenres.map((genre, idx) => (
-              <div className="flex items-center mb-4" key={idx}>
-                <input
-                  id={`genre-checkbox-${idx}`}
-                  type="checkbox"
-                  value={genre}
-                  onChange={handleGenreChange}
-                  checked={selectedGenres.includes(genre)}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  htmlFor={`genre-checkbox-${idx}`}
-                  className="ms-2 text-xs font-medium text-gray-900 dark:text-gray-300"
-                >
-                  {genre}
-                </label>
-              </div>
-            ))}
+            {loading ? (
+              <div className="text-gray-500">Loading genres...</div>
+            ) : (
+              uniqueGenres.map((genre, idx) => (
+                <div className="flex items-center mb-4" key={idx}>
+                  <input
+                    id={`genre-checkbox-${idx}`}
+                    type="checkbox"
+                    value={genre}
+                    onChange={handleGenreChange}
+                    checked={selectedGenres.includes(genre)}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor={`genre-checkbox-${idx}`}
+                    className="ml-2 text-sm font-medium text-gray-900"
+                  >
+                    {genre}
+                  </label>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

@@ -1,8 +1,12 @@
 import React from 'react'
 
-function SearchInput({value, onChange}) {
+function SearchInput({ value, onChange, clearSearch }) {
   return (
     <form className="max-w-md mx-auto">
+      <button onClick={clearSearch} className="ml-auto text-sm text-red-500 text-right mb-3 block">
+        Clear Search
+      </button>
+
       <label
         htmlFor="default-search"
         className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
