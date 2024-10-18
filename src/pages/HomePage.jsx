@@ -79,6 +79,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   );
 
   const handleSearchChange = (e) => {
+    e.preventDefault();
     const value = e.target.value;
     setSearchTerm(value);
     debouncedSearchChange(value);
@@ -116,6 +117,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
 
   const clearSearch = () => {
     setSearchTerm("");
+    debouncedSearchChange("");
     updateNavigation(currentPage);
   };
 

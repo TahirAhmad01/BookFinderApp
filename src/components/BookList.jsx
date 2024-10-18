@@ -31,7 +31,7 @@ const BookList = ({ books, loading, wishlist, onWishlistToggle, totalPages, curr
         ))}
       </div>
       <div className="py-4 flex justify-center">
-        {totalPages > 0 && (
+        {totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
