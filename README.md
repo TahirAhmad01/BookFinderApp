@@ -1,4 +1,6 @@
-## Book List App
+## Book Finder - Zepto Apps Assignment
+
+BookFinder is a simple app for discovering and exploring books. Users can search by title, filter by genre, and add books to a wishlist. The app features a responsive design, ensuring a great experience on any device. Navigate easily with pagination and find detailed book information on individual pages. User preferences are saved for a personalized browsing experience.
 
 ### Project Setup
 

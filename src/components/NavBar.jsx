@@ -30,7 +30,7 @@ function NavBar() {
               <img src={logo} className="h-6" alt="Logo" />
             </div>
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              Book List
+              Book Finder
             </span>
           </Link>
           <button
