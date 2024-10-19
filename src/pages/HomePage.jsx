@@ -41,12 +41,12 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     setCurrentPage(page);
     setSearchTerm(search);
     setSelectedGenre(genre);
-  }, [location]);
+  }, []);
 
   const loadBooks = useCallback(async () => {
     setLoading(true);
-    const searchParam = searchTerm
-      ? `&search=${encodeURIComponent(searchTerm)}`
+    const searchParam = debounceSearch
+      ? `&search=${encodeURIComponent(debounceSearch)}`
       : "";
     const genreParam = selectedGenre
       ? `&topic=${encodeURIComponent(selectedGenre)}`
@@ -59,7 +59,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
 
   useEffect(() => {
     loadBooks();
-  }, [loadBooks]);
+  }, [debounceSearch, currentPage, selectedGenre, loadBooks]);
 
   useEffect(() => {
     updateUniqueGenres();
@@ -72,10 +72,10 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   const debouncedSearchChange = useMemo(
     () =>
       debounce((value) => {
-        updateNavigation(1, value);
+        updateNavigation(1, value, selectedGenre);
         setDebounceSearch(value);
       }, 700),
-    [navigate]
+    [navigate, selectedGenre]
   );
 
   const handleSearchChange = (e) => {
@@ -115,11 +115,14 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const clearSearch = () => {
+  const clearFilter = () => {
     setSearchTerm("");
-    debouncedSearchChange("");
-    updateNavigation(currentPage);
+    setSelectedGenre(null);
+    setDebounceSearch("");
+    setCurrentPage(1);
+    updateNavigation(1, "", null);
   };
+
 
   const updateNavigation = (
     page,
@@ -128,8 +131,16 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   ) => {
     const newSearchParams = new URLSearchParams(location.search);
     newSearchParams.set("page", page);
-    if (search) newSearchParams.set("search", search);
-    if (genre) newSearchParams.set("genres", genre);
+    if (search) {
+      newSearchParams.set("search", search);
+    } else {
+      newSearchParams.delete("search");
+    }
+    if (genre) {
+      newSearchParams.set("genres", genre);
+    } else {
+      newSearchParams.delete("genres");
+    }
     navigate(`?${newSearchParams.toString()}`);
   };
 
@@ -155,7 +166,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
         toggleDrawer={toggleDrawer}
         searchTerm={searchTerm}
         handleSearchChange={handleSearchChange}
-        clearSearch={clearSearch}
+        clearFilter={clearFilter}
         loading={loading}
         uniqueGenres={uniqueGenres}
         selectedGenre={selectedGenre}
@@ -188,7 +199,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
         <DesktopFilters
           searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
-          clearSearch={clearSearch}
+          clearFilter={clearFilter}
           loading={loading}
           uniqueGenres={uniqueGenres}
           selectedGenre={selectedGenre}

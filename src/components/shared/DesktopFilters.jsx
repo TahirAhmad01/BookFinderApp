@@ -6,7 +6,7 @@ const DesktopFilters = (props) => {
   const {
     searchTerm,
     handleSearchChange,
-    clearSearch,
+    clearFilter,
     loading,
     uniqueGenres,
     selectedGenre,
@@ -22,7 +22,7 @@ const DesktopFilters = (props) => {
       <SearchInput
         value={searchTerm}
         onChange={handleSearchChange}
-        clearSearch={clearSearch}
+        clearFilter={clearFilter}
       />
       <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
         Genres

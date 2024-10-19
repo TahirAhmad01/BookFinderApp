@@ -1,15 +1,15 @@
 import React from "react";
 
 function SearchInput(props) {
-  const { value, onChange, clearSearch } = props || {};
+  const { value, onChange, clearFilter } = props || {};
 
   return (
     <div className="max-w-md mx-auto">
       <button
-        onClick={clearSearch}
+        onClick={clearFilter}
         className="ml-auto text-sm text-red-500 text-right mb-3 block"
       >
-        Clear Search
+        Clear Filter
       </button>
 
       <label
