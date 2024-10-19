@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
 
-function SearchInput({ value, onChange, clearSearch }) {
+function SearchInput(props) {
+  const { value, onChange, clearSearch } = props || {};
+
   return (
     <div className="max-w-md mx-auto">
-      <button onClick={clearSearch} className="ml-auto text-sm text-red-500 text-right mb-3 block">
+      <button
+        onClick={clearSearch}
+        className="ml-auto text-sm text-red-500 text-right mb-3 block"
+      >
         Clear Search
       </button>
 
@@ -45,4 +50,4 @@ function SearchInput({ value, onChange, clearSearch }) {
   );
 }
 
-export default SearchInput
+export default SearchInput;

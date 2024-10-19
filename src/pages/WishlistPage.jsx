@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import BookList from "../components/BookList";
-import DesktopFilters from "../components/DesktopFilters";
-import MobileFilterDrawer from "../components/MobileFilterDrawer";
+import BookList from "../components/shared/BookList";
+import DesktopFilters from "../components/shared/DesktopFilters";
+import MobileFilterDrawer from "../components/shared/MobileFilterDrawer";
 import { FaFilter } from "react-icons/fa6";
 
 const WishlistPage = ({ wishlist, onWishlistToggle }) => {
@@ -22,13 +22,13 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
     const searchTermLower = searchTerm.toLowerCase();
     const filtered = wishlist.filter(
       (book) =>
-        (book.title.toLowerCase().includes(searchTermLower) ||
-          book.subjects.some((subject) =>
+        (book?.title.toLowerCase().includes(searchTermLower) ||
+          book?.subjects.some((subject) =>
             subject.toLowerCase().includes(searchTermLower)
           )) &&
         (selectedGenres.length === 0 ||
           selectedGenres.some((genre) =>
-            book.bookshelves.map(removeBrowsingPrefix).includes(genre)
+            book?.bookshelves.map(removeBrowsingPrefix).includes(genre)
           ))
     );
 

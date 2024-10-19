@@ -1,9 +1,19 @@
 import React from "react";
 import BookCard from "./BookCard";
 import Pagination from "./Pagination";
-import SkeletonCard from "./shared/SkeletonCard";
+import SkeletonCard from "./SkeletonCard";
 
-const BookList = ({ books, loading, wishlist, onWishlistToggle, totalPages, currentPage, onPageChange }) => {
+const BookList = (props) => {
+  const {
+    books,
+    loading,
+    wishlist,
+    onWishlistToggle,
+    totalPages,
+    currentPage,
+    onPageChange,
+  } = props || {};
+
   if (loading) {
     return (
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center w-full">
@@ -14,18 +24,18 @@ const BookList = ({ books, loading, wishlist, onWishlistToggle, totalPages, curr
     );
   }
 
-  if (books.length === 0) {
+  if (books?.length === 0) {
     return <div className="text-center text-lg">No books found</div>;
   }
 
   return (
     <>
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-3 justify-items-center">
-        {books.map((book) => (
+        {books?.map((book) => (
           <BookCard
             book={book}
-            key={book.id}
-            isWishlisted={wishlist.some((item) => item.id === book.id)}
+            key={book?.id}
+            isWishlisted={wishlist.some((item) => item?.id === book?.id)}
             onWishlistToggle={onWishlistToggle}
           />
         ))}

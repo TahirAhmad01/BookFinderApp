@@ -4,6 +4,7 @@ import WishlistPage from "./pages/WishlistPage";
 import BookDetailsPage from "./pages/BookDetailsPage";
 import { useEffect, useState } from "react";
 import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
 
 const App = () => {
   const [wishlist, setWishlist] = useState(() => {
@@ -49,6 +50,7 @@ const App = () => {
           <Route path="/book/:id" element={<BookDetailsPage />} />
         </Routes>
       </div>
+      <Footer/>
     </Router>
   );
 };

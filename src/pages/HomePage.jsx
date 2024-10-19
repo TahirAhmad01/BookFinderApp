@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { debounce } from "../utils/debounce";
 import { fetchBooks } from "../utils/api/bookApi";
-import BookList from "../components/BookList";
-import MobileFilterDrawer from "../components/MobileFilterDrawer";
-import DesktopFilters from "../components/DesktopFilters";
+import BookList from "../components/shared/BookList";
+import MobileFilterDrawer from "../components/shared/MobileFilterDrawer";
+import DesktopFilters from "../components/shared/DesktopFilters";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   getLocalStorageItem,
@@ -73,7 +73,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     () =>
       debounce((value) => {
         updateNavigation(1, value);
-        setDebounceSearch(value)
+        setDebounceSearch(value);
       }, 700),
     [navigate]
   );
@@ -167,7 +167,10 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
             <div className="font-semibold pt-3 pb-4 text-xl w-full">
               Book List
             </div>
-            <button onClick={toggleDrawer} className="rounded-md border px-4 py-1 h-10 flex items-center gap-2 md:hidden">
+            <button
+              onClick={toggleDrawer}
+              className="rounded-md border px-4 py-1 h-10 flex items-center gap-2 md:hidden"
+            >
               <FaFilter /> Filter
             </button>
           </div>
