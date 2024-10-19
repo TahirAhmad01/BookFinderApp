@@ -16,7 +16,7 @@ const BookCard = ({
 
   return (
     <React.Fragment>
-      <div className="w-full border rounded-lg overflow-hidden flex flex-col justify-between p-3">
+      <div className="w-full border rounded-lg overflow-hidden flex flex-col justify-between p-3 shadow-sm">
         <div
           className={`flex  items-center gap-3 ${
             disableWhitelistButton ? "max-h-[150px]" : "max-h-[230px]"

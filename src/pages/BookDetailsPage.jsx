@@ -119,7 +119,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-100 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Author
                   </th>
@@ -134,7 +134,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-100 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Subjects
                   </th>
@@ -147,7 +147,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-100 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Bookshelves
                   </th>
@@ -162,7 +162,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-100 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Language
                   </th>
@@ -175,7 +175,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-100 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Download Count
                   </th>
@@ -186,7 +186,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr>
                   <th
                     scope="row"
-                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-100 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Available Formats
                   </th>
