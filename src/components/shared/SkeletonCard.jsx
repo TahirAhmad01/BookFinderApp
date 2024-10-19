@@ -3,7 +3,7 @@ const SkeletonCard = ({ disableWhitelistButton }) => {
     <div className="animate-pulse w-full border rounded-lg overflow-hidden flex flex-col justify-between p-2">
       <div
         className={`flex w-full items-center gap-3 ${
-          disableWhitelistButton ? "max-h[90px]" : "max-h-[270px]"
+          disableWhitelistButton ? "max-h[70px]" : "max-h-[270px]"
         }`}
       >
         <div className="w-56 h-56 bg-gray-400"></div>

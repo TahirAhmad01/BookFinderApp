@@ -48,7 +48,15 @@ const App = () => {
               />
             }
           />
-          <Route path="/books/:id" element={<BookDetailsPage />} />
+          <Route
+            path="/books/:id"
+            element={
+              <BookDetailsPage
+                wishlist={wishlist}
+                onWishlistToggle={handleWishlistToggle}
+              />
+            }
+          />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
