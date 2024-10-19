@@ -97,7 +97,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
         <div className="w-full md:w-1/3 mb-4 md:mb-0 flex justify-center overflow-hidden">
           {bookDetails.formats && bookDetails.formats["image/jpeg"] ? (
             <img
-              className="w-full h-auto"
+              className="max-w-[450px] h-auto"
               src={bookDetails.formats["image/jpeg"]}
               alt={`${bookDetails.title} cover`}
             />
@@ -114,16 +114,16 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
           </h1>
 
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-fixed">
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-fixed break-words">
               <tbody>
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Author
                   </th>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     {bookDetails?.authors?.length > 0
                       ? bookDetails.authors
                           .map((author) => author.name)
@@ -134,11 +134,11 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Subjects
                   </th>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     {bookDetails?.subjects?.length > 0
                       ? bookDetails.subjects.join(", ")
                       : "No Subjects Available"}
@@ -147,11 +147,11 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Bookshelves
                   </th>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     {bookDetails?.bookshelves?.length > 0
                       ? bookDetails.bookshelves
                           .map(removeBrowsingPrefix)
@@ -162,11 +162,11 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Language
                   </th>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     {bookDetails?.languages?.length > 0
                       ? bookDetails.languages.join(", ")
                       : "Language Not Specified"}
@@ -175,22 +175,22 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
                     scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Download Count
                   </th>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     {bookDetails?.download_count ?? 0}
                   </td>
                 </tr>
                 <tr>
                   <th
                     scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800"
+                    className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 w-[160px] max-w-[160px]"
                   >
                     Available Formats
                   </th>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     <ul>
                       {bookDetails?.formats ? (
                         Object.entries(bookDetails.formats).map(
@@ -252,11 +252,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {booksToDisplay.length > 0 ? (
               booksToDisplay.map((book) => (
-                <BookCard
-                  key={book.id}
-                  book={book}
-                  disableWhitelistButton
-                />
+                <BookCard key={book.id} book={book} disableWhitelistButton />
               ))
             ) : (
               <p>No available books to display.</p>

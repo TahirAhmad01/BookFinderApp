@@ -2,10 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add this CSS to your main CSS file */
+body{
+  @apply bg-slate-50
+}
+
 @keyframes slideIn {
   from {
-    transform: translateX(100%); /* Change from -100% to 100% */
+    transform: translateX(100%);
   }
   to {
     transform: translateX(0);
@@ -17,7 +20,7 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(100%); /* Change from -100% to 100% */
+    transform: translateX(100%);
   }
 }
 
