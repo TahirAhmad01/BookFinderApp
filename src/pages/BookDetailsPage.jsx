@@ -74,7 +74,13 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
     return <div>No book details available.</div>;
   }
 
-  // console.log(wishlist);
+  const removeBrowsingPrefix = (bookshelf) => {
+    const prefix = "Browsing: ";
+    return bookshelf.startsWith(prefix)
+      ? bookshelf.slice(prefix.length)
+      : bookshelf;
+  };
+
   const isBookInWishlist = wishlist.some((book) => book.id === bookDetails.id);
 
   const handleWhitelistToggle = () => {
@@ -86,12 +92,12 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
   );
 
   return (
-    <div className="book-details-page container mx-auto p-4">
-      <div className="main-details mb-8 flex flex-col md:flex-row">
+    <div className="book-details-page container mx-auto mt-7">
+      <div className="main-details mb-8 flex flex-col gap-6 md:flex-row">
         <div className="w-full md:w-1/3 mb-4 md:mb-0 flex justify-center overflow-hidden">
           {bookDetails.formats && bookDetails.formats["image/jpeg"] ? (
             <img
-              className="mt-6 max-w-[500px] h-auto"
+              className="w-full h-auto"
               src={bookDetails.formats["image/jpeg"]}
               alt={`${bookDetails.title} cover`}
             />
@@ -102,23 +108,13 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
           )}
         </div>
 
-        <div className="w-full md:w-2/3 pl-4 flex flex-col justify-center items-center">
+        <div className="w-full md:w-2/3 flex flex-col justify-center items-center">
           <h1 className="text-3xl font-bold mb-4">
             {bookDetails.title || "Untitled"}
           </h1>
 
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="px-6 py-3 w-1/3">
-                    Attribute
-                  </th>
-                  <th scope="col" className="px-6 py-3 w-2/3">
-                    Details
-                  </th>
-                </tr>
-              </thead>
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-fixed">
               <tbody>
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th
@@ -157,7 +153,9 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                   </th>
                   <td className="px-6 py-4">
                     {bookDetails?.bookshelves?.length > 0
-                      ? bookDetails.bookshelves.join(", ")
+                      ? bookDetails.bookshelves
+                          .map(removeBrowsingPrefix)
+                          .join(", ")
                       : "No Bookshelves Available"}
                   </td>
                 </tr>
@@ -242,17 +240,29 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
         </div>
       </div>
 
-      <div className="related-books mt-12">
+      <div>
         <h2 className="text-xl font-semibold mb-4">Available Books</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {availableBooksLoading
-            ? [...Array(6)].map((_, index) => (
-                <SkeletonCard key={index} disableWhitelistButton />
+        {availableBooksLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <SkeletonCard key={index} disableWhitelistButton />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {booksToDisplay.length > 0 ? (
+              booksToDisplay.map((book) => (
+                <BookCard
+                  key={book.id}
+                  book={book}
+                  disableWhitelistButton
+                />
               ))
-            : booksToDisplay.map((book) => (
-                <BookCard key={book.id} book={book} disableWhitelistButton />
-              ))}
-        </div>
+            ) : (
+              <p>No available books to display.</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

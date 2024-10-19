@@ -11,16 +11,6 @@ function BookDetailsPageSkeleton() {
         <div className="w-3/4 h-8 bg-gray-200 animate-pulse mb-4"></div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400 w-full">
-              <tr className="w-full">
-                <th scope="col" className="px-6 py-3 w-1/3">
-                  Attribute
-                </th>
-                <th scope="col" className="px-6 py-3 w-2/3">
-                  Details
-                </th>
-              </tr>
-            </thead>
             <tbody>
               {Array(6)
                 .fill(0)
