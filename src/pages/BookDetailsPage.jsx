@@ -111,10 +111,10 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-6 py-3 w-1/3">
                     Attribute
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-6 py-3 w-2/3">
                     Details
                   </th>
                 </tr>
@@ -250,11 +250,7 @@ function BookDetailsPage({ wishlist, onWishlistToggle }) {
                 <SkeletonCard key={index} disableWhitelistButton />
               ))
             : booksToDisplay.map((book) => (
-                <BookCard
-                  key={book.id}
-                  book={book}
-                  disableWhitelistButton
-                />
+                <BookCard key={book.id} book={book} disableWhitelistButton />
               ))}
         </div>
       </div>
