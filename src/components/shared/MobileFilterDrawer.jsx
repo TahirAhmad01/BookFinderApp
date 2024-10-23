@@ -28,7 +28,7 @@ const MobileFilterDrawer = (props) => {
       <SearchInput
         value={searchTerm}
         onChange={handleSearchChange}
-        clearSearch={clearFilter}
+        clearFilter={clearFilter}
       />
       <div className="pt-6 pb-2 mb-4 text-xl font-semibold border-b-2">
         Genres
@@ -44,7 +44,7 @@ const MobileFilterDrawer = (props) => {
                 onChange={handleGenreChange}
                 checked={
                   page == "whitelist"
-                    ? selectedGenre.includes(genre)
+                    ? selectedGenre?.includes(genre)
                     : selectedGenre === genre
                 }
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"

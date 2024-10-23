@@ -61,6 +61,12 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
     setCurrentPage(1);
   };
 
+  const clearFilter = () => {
+    setSearchTerm("");
+    setSelectedGenres([]);
+    setCurrentPage(1);
+  };
+
   const uniqueGenres = [
     ...new Set(
       wishlist.flatMap((book) => book.bookshelves.map(removeBrowsingPrefix))
@@ -83,11 +89,12 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
         toggleDrawer={toggleDrawer}
         searchTerm={searchTerm}
         handleSearchChange={handleSearchChange}
-        clearSearch={clearSearch}
         loading={loading}
         uniqueGenres={uniqueGenres}
-        selectedGenres={selectedGenres}
+        selectedGenre={selectedGenres}
         handleGenreChange={handleGenreChange}
+        page="whitelist"
+        clearFilter={clearFilter}
       />
       <div className="md:grid grid-cols-12 gap-10">
         <div className="md:col-span-9 col-span-12">
@@ -121,6 +128,7 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
           selectedGenre={selectedGenres}
           handleGenreChange={handleGenreChange}
           page="whitelist"
+          clearFilter={clearFilter}
         />
       </div>
     </div>
