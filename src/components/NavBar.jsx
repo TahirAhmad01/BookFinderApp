@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.svg";
+import ThemeToggle from "../context/ThemeToggle";
 
 const navLinks = [
   { link: "/", name: "Home" },
@@ -135,6 +136,7 @@ function NavBar() {
                 </li>
               ))}
             </ul>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
