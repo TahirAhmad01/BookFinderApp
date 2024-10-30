@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { MdFavoriteBorder } from "react-icons/md";
-import { MdFavorite } from "react-icons/md";
+import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 
 const BookCard = ({
   book,
@@ -16,9 +15,9 @@ const BookCard = ({
 
   return (
     <React.Fragment>
-      <div className="w-full border rounded-lg overflow-hidden flex flex-col justify-between p-3 shadow-sm">
+      <div className="w-full border rounded-lg overflow-hidden flex flex-col justify-between p-3 shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <div
-          className={`flex  items-center gap-3 ${
+          className={`flex items-center gap-3 ${
             disableWhitelistButton ? "max-h-[150px]" : "max-h-[230px]"
           }`}
         >
@@ -31,17 +30,17 @@ const BookCard = ({
               <img
                 src={formats["image/jpeg"]}
                 alt=""
-                className="mx-auto block aspect-[1/1.5] h-full rounded-none bg-gray-200 object-cover"
+                className="mx-auto block aspect-[1/1.5] h-full bg-gray-200 object-cover dark:bg-gray-600"
               />
             </div>
           </Link>
 
           <div className="py-5">
             <Link to={`/books/${id}`}>
-              <h3 className="font-semibold text-[#1a1668] duration-200 group-hover:text-primary sm:text-[15px] sm:leading-snug line-clamp-2">
+              <h3 className="font-semibold text-[#1a1668] duration-200 group-hover:text-primary sm:text-[15px] sm:leading-snug line-clamp-2 dark:text-white">
                 {title}
               </h3>
-              <p className="mb-0.5 text-sm text-gray-500">
+              <p className="mb-0.5 text-sm text-gray-500 dark:text-gray-400">
                 {authors.map((a) => a.name).join(", ")}
               </p>
               {!disableWhitelistButton && (
@@ -61,10 +60,10 @@ const BookCard = ({
             {!disableWhitelistButton && (
               <button
                 onClick={() => onWishlistToggle(book)}
-                className="py-2 px-3 me-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 mt-3"
+                className="py-2 px-3 me-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 mt-3"
               >
-                <div className="text-red-700 text-xl">
-                  {isWishlisted ? <MdFavorite /> : <MdFavoriteBorder />}{" "}
+                <div className="text-red-700 text-xl dark:text-red-500">
+                  {isWishlisted ? <MdFavorite /> : <MdFavoriteBorder />}
                 </div>
               </button>
             )}

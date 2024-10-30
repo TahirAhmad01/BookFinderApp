@@ -28,7 +28,7 @@ const App = () => {
   return (
     <Router>
       <NavBar />
-      <div className="max-w-screen-xl mx-auto px-5 pt-3 w-full overflow-hidden">
+      <div className="max-w-screen-xl mx-auto px-5 pt-3 w-full overflow-hidden dark:text-white">
         <Routes>
           <Route
             path="/"
