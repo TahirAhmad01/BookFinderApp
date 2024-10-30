@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { DarkModeSwitch } from "react-toggle-dark-mode";
 
 function ThemeToggle() {
   const [theme, setTheme] = useState(
@@ -19,12 +20,11 @@ function ThemeToggle() {
   };
 
   return (
-    <button
-      onClick={toggleTheme}
-      className="p-2 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded"
-    >
-      Toggle {theme === "dark" ? "Light" : "Dark"} Mode
-    </button>
+    <DarkModeSwitch
+      checked={theme === "dark"}
+      onChange={toggleTheme}
+      size={22}
+    />
   );
 }
 
