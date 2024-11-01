@@ -25,7 +25,9 @@ const BookList = (props) => {
   }
 
   if (books?.length === 0) {
-    return <div className="text-center text-lg">No books found</div>;
+    return (
+      <div className="text-center text-lg dark:text-white">No books found</div>
+    );
   }
 
   return (

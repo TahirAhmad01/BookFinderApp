@@ -83,7 +83,7 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
   };
 
   return (
-    <div>
+    <div className="bg-white dark:bg-gray-900">
       <MobileFilterDrawer
         isOpen={isDrawerOpen}
         toggleDrawer={toggleDrawer}
@@ -98,15 +98,15 @@ const WishlistPage = ({ wishlist, onWishlistToggle }) => {
       />
       <div className="md:grid grid-cols-12 gap-10">
         <div className="md:col-span-9 col-span-12">
-          <div className="flex justify-between items-center mb-3 border-b">
-            <div className="font-semibold pt-3 pb-4 text-xl w-full">
+          <div className="flex justify-between items-center mb-3 border-b border-gray-200 dark:border-gray-700">
+            <div className="font-semibold pt-3 pb-4 text-xl w-full text-gray-900 dark:text-white">
               White List
             </div>
             <button
               onClick={toggleDrawer}
-              className="rounded-md border px-4 py-1 h-10 flex items-center gap-2 md:hidden"
+              className="rounded-md border border-gray-300 dark:border-gray-700 px-4 py-1 h-10 flex items-center gap-2 md:hidden"
             >
-              <FaFilter /> Filter
+              <FaFilter className="text-gray-700 dark:text-gray-300" /> Filter
             </button>
           </div>
           <BookList

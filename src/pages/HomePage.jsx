@@ -123,7 +123,6 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
     updateNavigation(1, "", null);
   };
 
-
   const updateNavigation = (
     page,
     search = searchTerm,
@@ -160,7 +159,7 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
   };
 
   return (
-    <div>
+    <div className=" dark:text-white min-h-screen">
       <MobileFilterDrawer
         isOpen={isDrawerOpen}
         toggleDrawer={toggleDrawer}
@@ -174,13 +173,13 @@ const HomePage = ({ wishlist, onWishlistToggle }) => {
       />
       <div className="md:grid grid-cols-12 gap-5 w-full">
         <div className="md:col-span-8 lg:col-span-9">
-          <div className="flex justify-between items-center mb-3 border-b">
+          <div className="flex justify-between items-center mb-3 border-b dark:border-gray-700">
             <div className="font-semibold pt-3 pb-4 text-xl w-full">
               Book List
             </div>
             <button
               onClick={toggleDrawer}
-              className="rounded-md border px-4 py-1 h-10 flex items-center gap-2 md:hidden"
+              className="rounded-md border px-4 py-1 h-10 flex items-center gap-2 md:hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white"
             >
               <FaFilter /> Filter
             </button>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.svg";
+import ThemeToggle from "../context/ThemeToggle";
 
 const navLinks = [
   { link: "/", name: "Home" },
@@ -20,7 +21,7 @@ function NavBar() {
 
   return (
     <React.Fragment>
-      <nav className="bg-white border-gray-50 dark:bg-gray-900 shadow-md sticky top-0 left-0 right-0 w-full z-50">
+      <nav className="md:backdrop-blur-xl bg-[#f1f5f9]/20 dark:bg-[#0b1327]/20 border-gray-50 dark:bg-gray-900 shadow-md sticky top-0 left-0 right-0 w-full z-50 border-b dark:border-gray-800">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link
             to="/"
@@ -33,28 +34,31 @@ function NavBar() {
               Book Finder
             </span>
           </Link>
-          <button
-            onClick={toggleDrawer}
-            className="md:hidden p-2 text-gray-700"
-            aria-label="Open drawer"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+          <div className="flex items-center md:hidden">
+            <ThemeToggle />
+            <button
+              onClick={toggleDrawer}
+              className="p-2 text-gray-700 dark:text-gray-300"
+              aria-label="Open drawer"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
-          </button>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+            </button>
+          </div>
           <div
-            className={`fixed top-0 right-0 w-3/4 h-full bg-white shadow-lg z-50 transform transition-transform ${
+            className={`md:hidden fixed top-0 right-0 w-3/4 h-full bg-white dark:bg-gray-800 dark:text-white shadow-lg z-50 transform transition-transform max-w-[350px]  ${
               isOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
@@ -77,12 +81,12 @@ function NavBar() {
                 </svg>
               </button>
             </div>
-            <ul className="flex flex-col p-4">
+            <ul className="flex flex-col py-4 px-2">
               {navLinks.map((item) => (
                 <li key={item.name}>
                   <Link
                     to={item.link}
-                    className="block py-2 text-gray-900 hover:bg-gray-100"
+                    className="block p-2 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-white rounded-md"
                     onClick={() =>
                       handleLinkClick(
                         `/path/to/${item.name
@@ -123,7 +127,7 @@ function NavBar() {
                 placeholder="Search..."
               />
             </div>
-            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0  dark:border-gray-700 mr-3">
               {navLinks.map((item) => (
                 <li key={item.name}>
                   <Link
@@ -135,6 +139,7 @@ function NavBar() {
                 </li>
               ))}
             </ul>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
